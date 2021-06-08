@@ -259,6 +259,148 @@ def message_box(content):
 
 #-------------------------- END MESSAGE -----------------------------------#
 
+################################### MAIN MENU ######################################
+def setLevel(l):
+  global level
+  level = l
+  myLabel = Label(root, text="Level : " + str(level))
+  myLabel.grid(row=7, column=0, columnspan=5, padx=10, pady=5)
+
+def setSize(s):
+  global cols, rows
+  cols = s
+  rows = s
+  myLabel = Label(root, text="Size : " + str(s))
+  myLabel.grid(row=8, column=0, columnspan=5, padx=10, pady=5)
+
+def setMode(isAI):
+  global modeAI
+  modeAI = isAI
+  if modeAI: messMode = 'AI        '
+  else : messMode = 'Human'
+
+  modeDesc = Label(root, text="Mode : " + messMode)
+  modeDesc.grid(row=9, column=0, columnspan=5, padx=10, pady=5)
+
+def mainMenu():
+  global destroyed, root, modeAI
+  if destroyed:
+    root = Tk()
+    destroyed = False
+
+  root.title("\tSNAKE GAME - WELCOME!!!")
+  root.geometry('600x600')
+  root.resizable(False, False)
+  image = Image.open("assets/snake.png")
+  zoom = 0.5
+  pixels_x, pixels_y = tuple([int(zoom * x)  for x in image.size])
+  my_img = ImageTk.PhotoImage(image.resize((pixels_x, pixels_y)))
+  
+  imageLabel = Label(image=my_img)
+  imageLabel.grid(row=0, column=0, columnspan=5, padx=0, pady=0)
+  
+  levelLabel = Label(root, text="Level:")
+  levelLabel.grid(row=1, column=0, columnspan=5, padx=10, pady=0)
+
+  level_1 = Button(root, text="1", padx=40, pady=10, command=lambda: setLevel(1))
+  level_2 = Button(root, text="2", padx=40, pady=10, command=lambda: setLevel(2))
+  level_3 = Button(root, text="3", padx=40, pady=10, command=lambda: setLevel(3))
+  level_4 = Button(root, text="4", padx=40, pady=10, command=lambda: setLevel(4))
+  level_5 = Button(root, text="5", padx=40, pady=10, command=lambda: setLevel(5))
+
+  level_1.grid(row=2, column=0)
+  level_2.grid(row=2, column=1)
+  level_3.grid(row=2, column=2)
+  level_4.grid(row=2, column=3)
+  level_5.grid(row=2, column=4)
+  
+  sizeLabel = Label(root, text="Size:")
+  sizeLabel.grid(row=3, column=0, columnspan=5, padx=10, pady=10)
+
+  size_24 = Button(root, text="24x24", padx=40, pady=10, command=lambda: setSize(24))
+  size_30 = Button(root, text="30x30", padx=40, pady=10, command=lambda: setSize(30))
+  size_36 = Button(root, text="36x36", padx=40, pady=10, command=lambda: setSize(36))
+  size_40 = Button(root, text="40x40", padx=40, pady=10, command=lambda: setSize(40))
+  size_45 = Button(root, text="45x45", padx=40, pady=10, command=lambda: setSize(45))
+
+  size_24.grid(row=4, column=0)
+  size_30.grid(row=4, column=1)
+  size_36.grid(row=4, column=2)
+  size_40.grid(row=4, column=3)
+  size_45.grid(row=4, column=4)
+
+  modeLabel = Label(root, text="Mode: ")
+  modeLabel.grid(row=5, column=0, columnspan=5, padx=10, pady=15)
+  human = Button(root, text="Human", padx=40, pady=10, command=lambda: setMode(False))
+  ai = Button(root, text="AI", padx=40, pady=10, command=lambda: setMode(True))
+
+  human.grid(row=6, column=1)
+  ai.grid(row=6, column=3)
+
+  levelDesc = Label(root, text="Level : " + str(level))
+  levelDesc.grid(row=7, column=0, columnspan=5, padx=10, pady=5)
+
+  sizeDesc = Label(root, text="Size : " + str(cols))
+  sizeDesc.grid(row=8, column=0, columnspan=5, padx=10, pady=5)
+
+  if modeAI: messMode = 'AI'
+  else : messMode = 'Human'
+
+  modeDesc = Label(root, text="Mode : " + messMode)
+  modeDesc.grid(row=9, column=0, columnspan=5, padx=10, pady=5)
+
+  saveButton = Button(root, text="PLAY!!!", padx=90, pady=20, command=lambda: goTosetup())
+  saveButton.grid(row=10, column=0, columnspan=5, padx=10, pady=10)
+  root.mainloop()
+
+def goTosetup():
+  root.destroy()
+  global destroyed
+  destroyed = True
+  setup()
+
+def setup():
+  global cols, rows, width, height, wr, hr, direction, screen, clock, grid, snake, food, current, dir_array, score, out, done, isSetup
+
+  width = 600
+  height = 600
+  wr = width/cols
+  hr = height/rows
+  direction = 1
+
+  screen = pg.display.set_mode([width, height])
+  # pg.display.set_caption("SNAKE GAME\t\t"+str(score))
+  clock = pg.time.Clock()
+
+  #buat grid
+  grid = []
+  for i in range(rows):
+    grid.append([])
+    for j in range(cols):
+      grid[i].append(Spot(i,j))
+
+  #tiap grid tau neighbornya
+  for i in range(rows):
+    for j in range(cols):
+      grid[i][j].add_neighbors()
+
+
+  snake = [grid[rows//2][cols//2]]                      # posisi awal snake di tengah grid
+  food = grid[randint(1, rows-2)][randint(1, cols-2)]   # posisi awal makanan random di grid
+  current = snake[-1]                                   # posisi saat ini(head)
+
+  dir_array = getpath(food, snake)
+  score = 0
+
+  sp.call('clear',shell=True)
+  print("Level = ",level)
+  print("Size = ",cols)
+  print("Score = ",score)
+  out = False
+  done = False
+  isSetup = True
+#-------------------------------- MAIN MENU ----------------------------------#
+
 ################################## MAIN PROGRAM ############################################
 while not done:
   pg.display.set_caption("SNAKE GAME    Your Score : "+str(score))
