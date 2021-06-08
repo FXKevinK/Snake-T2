@@ -202,6 +202,63 @@ isSetup = True
 modeAI = True
 #-------------------------------- END DECLARATION -------------------------------------#
 
+################### END MESSAGE #####################################
+def Again():
+  global destroyed
+  root.destroy()
+  destroyed = True
+  mainMenu()
+
+def Exit():
+  global done, out
+  print('EXIT GAME')
+  done = True
+  out = True
+  root.destroy()
+
+def endMessage(content):
+  root.title("\tSNAKE GAME - GAME OVER")
+  root.geometry('360x144')
+  root.resizable(False, False)
+
+  myLabel = Label(root, text=content)
+  myLabel.pack()
+
+  global highscore
+  if score > highscore:
+        highscore = score
+        myLabel = Label(root, text="NEW HIGH SCORE!!!\n"+"High Score: " + str(highscore))
+        myLabel.pack()
+        with open(path.join(path.dirname(__file__), HS_FILE), 'w') as f:
+            f.write(str(score))
+  else:
+        myLabel = Label(root, text="High Score: " + str(highscore))
+        myLabel.pack()
+  pg.display.flip()
+
+  myYesButton = Button(root, text="Play again", command=Again)
+  myYesButton.pack()
+
+  myNoButton = Button(root, text="Exit", command=Exit)
+  myNoButton.pack()
+
+  root.mainloop()
+
+def message_box(content):
+  root.title("Key pressed")
+  messageFrame = LabelFrame(root, padx=10, pady=10)
+  messageFrame.pack(padx=10, pady=10)
+
+  myLabel = Label(messageFrame, text=content)
+  myLabel.pack()
+
+  myNoButton = Button(messageFrame, text="OK", command=Exit)
+  myNoButton.pack()
+
+  root.mainloop()
+
+#-------------------------- END MESSAGE -----------------------------------#
+
 ################################## MAIN PROGRAM ############################################
 while not done:
   pg.display.set_caption("SNAKE GAME    Your Score : "+str(score))
