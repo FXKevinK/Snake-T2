@@ -194,7 +194,7 @@ current = snake[-1]                                   # posisi saat ini(head)
 dir_array = getpath(food, snake)
 score = 0
 
-sp.call('clear',shell=True)
+#sp.call('clear',shell=True)
 print("Score = ",score)
 out = False
 done = False
@@ -392,7 +392,7 @@ def setup():
   dir_array = getpath(food, snake)
   score = 0
 
-  sp.call('clear',shell=True)
+  #sp.call('clear',shell=True)
   print("Level = ",level)
   print("Size = ",cols)
   print("Score = ",score)
@@ -441,7 +441,7 @@ while not done:
   if current.x == food.x and current.y == food.y:
     score = score + 1
     load_data()
-    sp.call('clear',shell=True)
+    #sp.call('clear',shell=True)
     print("Level = ",level)
     print("Size = ",cols)
     print("Score = ",score)
